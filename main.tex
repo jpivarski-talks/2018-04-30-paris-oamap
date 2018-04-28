@@ -510,7 +510,7 @@ Original $+$ derived: 3482~MB + 0.41~MB
 \begin{frame}{OAMap status (last slide)}
 \vspace{0.5 cm}
 \large
-\begin{itemize}\setlength{\itemsep}{0.5 cm}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
 \item Data types and their array representations \hfill \textcolor{darkorange}{\bf done\hspace{-0.15 cm}}
 \begin{itemize}
 \item {\it except:} will probably revisit masks to make them more like Arrow's
@@ -519,6 +519,12 @@ Original $+$ derived: 3482~MB + 0.41~MB
 \item Python proxies and compilation as a Numba extension \hfill \textcolor{darkorange}{\bf done}
 
 \item Other language versions (C++, Julia) \hfill \textcolor{darkorange}{\bf thinking about it}
+
+\item Numpy (read/write) and ROOT (read-only) data backends \hfill \textcolor{darkorange}{\bf done}
+
+\item Apache Arrow, Parquet, HDF5, shelve (BerkleyDB)\ldots \hfill \textcolor{darkorange}{\bf in old version,}
+
+ \hfill \textcolor{darkorange}{\bf must port to new}
 
 \item Functional operations (e.g.\ {\tt\normalsize define, filter}) \hfill \textcolor{darkorange}{\bf alpha version}
 
