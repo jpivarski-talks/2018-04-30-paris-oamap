@@ -121,7 +121,7 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \end{frame}
 
 \begin{frame}{New technique}
-\vspace{0.5 cm}
+\vspace{0.35 cm}
 \textcolor{darkblue}{\large \underline{Object-array mapping (OAMap)}}
 
 \vspace{0.15 cm}
@@ -138,7 +138,7 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \end{description}
 \end{itemize}
 
-\vspace{0.15 cm}
+\vspace{0.2 cm}
 \begin{uncoverenv}<7->
 \begin{minipage}{\linewidth}
 \scriptsize \textcolor{darkblue}{Prior art:} T.\ Mattis, J.\ Henning, P.\ Rein, R.\ Hirschfeld, M.\ Appeltauer, ``Columnar Objects: Improving the Performance of Analytical Applications,'' in {\it 2015 ACM International Symposium on New Ideas, New Paradigms, and Reflections on Programming and Software (Onward!),} 2015, pp.\ 197--210.
@@ -146,6 +146,38 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \end{uncoverenv}
 \end{frame}
 
+\begin{frame}{Not new: splitting complex data into columns}
+\vspace{0.35 cm}
+\textcolor{darkblue}{\large Example:} {\tt List\big(List\big(Record\big(\{"x":\ "char", "y":\ "int"\}\big)\big)\big)}
+
+\vspace{0.25 cm}
+\begin{tabular}{r l}
+\small logical data & {\tt\scriptsize \textcolor{blue}{[}\textcolor{violet}{[}(\textcolor{darkorange}{a},\textcolor{darkgreen}{1}), (\textcolor{darkorange}{b},\textcolor{darkgreen}{2}), (\textcolor{darkorange}{c},\textcolor{darkgreen}{3}), (\textcolor{darkorange}{d},\textcolor{darkgreen}{4})\textcolor{violet}{]}, \textcolor{violet}{[]}, \textcolor{violet}{[}(\textcolor{darkorange}{e},\textcolor{darkgreen}{5}), (\textcolor{darkorange}{f},\textcolor{darkgreen}{6})\textcolor{violet}{]}\textcolor{blue}{]}, \textcolor{blue}{[]}, \textcolor{blue}{[}\textcolor{violet}{[}(\textcolor{darkorange}{g},\textcolor{darkgreen}{7})\textcolor{violet}{]}\textcolor{blue}{]}\ \textcolor{white}{]}} \\\hline
+\small outer list stops & {\tt\scriptsize \textcolor{blue}{[\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 3,\ \ 3,\ \ \ \ \ \ \ \ \ 4]}} \\
+\small inner list stops & {\tt\scriptsize \textcolor{violet}{[\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ 4,\ \ 4,\ \ \ \ \ \ \ \ \ \ \ \ \ \ 6,\ \ \ \ \ \ \ \ \ \ \ \ \ 7\ ]}} \\
+\small ``x'' attribute & {\tt\scriptsize \textcolor{darkorange}{[\ \ a,\ \ \ \ \ b,\ \ \ \ \ c,\ \ \ \ \ d,\ \ \ \ \ \ \ \ \ \ \ e,\ \ \ \ \ f,\ \ \ \ \ \ \ \ \ \ \ \ \ g\ \ \ \ \ ]}} \\
+\small ``y'' attribute & {\tt\scriptsize \textcolor{darkgreen}{[\ \ \ \ 1,\ \ \ \ \ 2,\ \ \ \ \ 3,\ \ \ \ \ 4,\ \ \ \ \ \ \ \ \ \ \ 5,\ \ \ \ \ 6,\ \ \ \ \ \ \ \ \ \ \ \ \ 7\ \ \ ]}}
+\end{tabular}
+
+\vspace{0.35 cm}
+\begin{uncoverenv}<2->
+\textcolor{darkblue}{\large Transformation rules:}
+\begin{itemize}
+\item Primitive data at leaves of schema are stored contiguously, with no structure.
+\item List structure encoded in a separate ``stops'' array, computed from the cumulative number of entries at its level of depth, written at each closing bracket.
+\end{itemize}
+\end{uncoverenv}
+
+\vspace{0.1 cm}
+\begin{uncoverenv}<3->
+\textcolor{darkblue}{\large Variations:}
+\begin{itemize}
+\item Store list structure as combined ``starts'' and ``stops'': {\tt\small [0, 4, 4, 6, 7]}
+\item Store as list lengths instead (smaller numbers, but not randomly accessible).
+\item Dremel/Parquet's definition levels and repetition levels.
+\end{itemize}
+\end{uncoverenv}
+\end{frame}
 
 
 \end{document}
