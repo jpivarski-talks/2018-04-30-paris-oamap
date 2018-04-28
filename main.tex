@@ -343,9 +343,6 @@ Because of heavy reliance on indexes, OAMap data can only be {\it appended} in c
 \end{uncoverenv}
 \begin{uncoverenv}<3->
 \begin{minted}{python}
->>> events
-[<Event at index 0>, <Event at index 1>, <Event at index 2>, ...,
- <Event at index 1921075>, <Event at index 1921076>]
 >>> events_v2[1].Muon[0].pz
 -2.1694915
 >>> events_v2.project("Muon/pz")
@@ -356,11 +353,164 @@ Because of heavy reliance on indexes, OAMap data can only be {\it appended} in c
 \begin{uncoverenv}<4->
 \begin{minted}{python}
 >>> events_v3 = events_v2.filter(lambda event: len(event.Muon) >= 2)
+>>> events_v3.project("Muon/pz")
+[[22.418062, -5.9247837], [-184.30815, -29.56351, -5.278402], ...,
+ [34.093197, -18.383192, -8.172784], [-10.909517, 2.486978]]
 >>> len(events), len(events_v2), len(events_v3)
 (1921077, 1921077, 299751)
 \end{minted}
 \end{uncoverenv}
 \end{frame}
 
+\begin{frame}[fragile]{Operations change schema, add new arrays}
+\vspace{0.15 cm}
+\scriptsize
+\begin{minted}{python}
+>>> events_v2.schema.show()
+List(
+  starts = 'object-B',
+  stops = 'object-E',
+  doc = 'Events',
+  content = Record(
+    name = 'Event',
+    fields = {
+      'Muon': List(
+        starts = 'nMuon',
+        stops = 'nMuon',
+        content = Record(
+          name = 'Muon',
+          fields = {
+            'pt': Primitive(dtype('float32'), data='Muon_pt'),
+            'eta': Primitive(dtype('float32'), data='Muon_eta'),
+            'phi': Primitive(dtype('float32'), data='Muon_phi'),
+            ...                           # all the old schema fields plus one new one
+            'pz': Primitive(dtype('float32'), data='array-0', namespace='namespace-0'),
+          })
+      ),
+      ...
+    }))
+\end{minted}
+
+\vspace{-7.7 cm}
+\hfill \begin{minipage}{0.6\linewidth}
+\begin{minted}{python}
+>>> events_v2._arrays.namespace
+'namespace-0'
+>>> events_v2._arrays.new
+{'array-0':
+     array([-2.1694915,  -6.8923326, -109.195724 , ...,
+            -9.802038 , -85.11946  ], dtype=float32)}
+\end{minted}
+
+\begin{uncoverenv}<2->
+\normalsize
+Original dataset: 3482~MB
+
+\vspace{0.2 cm}
+Original $+$ derived: 3482~MB + 5.2~MB
+\end{uncoverenv}
+\end{minipage}
+\vspace{7.7 cm}
+\end{frame}
+
+\begin{frame}[fragile]{Operations change schema, add new arrays}
+\vspace{0.15 cm}
+\scriptsize
+\begin{minted}{python}
+>>> events_v3.schema.show()
+List(
+  starts = 'array-0',
+  stops = 'array-1',
+  namespace = 'namespace-1',
+  doc = 'Events',
+  content = Pointer(
+    positions = 'array-2',
+    namespace = 'namespace-1',
+    target = Record(
+      name = 'Event',
+      fields = {
+        'Muon': List(
+          starts = 'nMuon',
+          stops = 'nMuon',
+          content = Record(
+            name = 'Muon',
+            ...
+            )
+        ),
+        ...
+      })
+  ))
+\end{minted}
+\vspace{-7.7 cm}
+\hfill \begin{minipage}{0.6\linewidth}
+\begin{minted}{python}
+>>> events_v3._arrays.namespace
+'namespace-1'
+>>> events_v3._arrays.new
+{'array-0': array([0]),
+ 'array-1': array([299751]),
+ 'array-2': array([     13,      16,      17, ...,
+                   1921064, 1921065, 1921070])}
+                   # using pointers as an event list
+\end{minted}
+
+\begin{uncoverenv}<2->
+\normalsize
+Original dataset: 3482~MB
+
+\vspace{0.2 cm}
+Original $+$ derived: 3482~MB + 0.41~MB
+\end{uncoverenv}
+
+\vspace{1 cm}
+\begin{uncoverenv}<3->
+\Large ``Soft'' skims are essentially free.
+\end{uncoverenv}
+\end{minipage}
+\vspace{7.7 cm}
+\end{frame}
+
+\begin{frame}{Columnar granularity}
+\vspace{0.25 cm}
+
+\begin{columns}[c]
+\column{0.4\linewidth}
+\begin{itemize}
+\item AOD (Analysis Object Data) was intended for analysis
+\item MiniAOD is a copy with derived products ({\tt\small define})
+\item USER are hundreds of skims made by physicists ({\tt\small filter})
+\end{itemize}
+
+\vspace{0.25 cm}
+\uncover<2->{If we could access columns of data \`a la carte the way OAMap does, we could support many versions of the data with only one copy.}
+
+\vspace{0.25 cm}
+\uncover<3->{\small \textcolor{darkblue}{The catch:} soft skims and structural sharing only work if the data reside on a shared service, which would be a culture shift in HEP.}
+
+\column{0.6\linewidth}
+\includegraphics[width=\linewidth]{cms-data-explosion.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}{OAMap status (last slide)}
+\vspace{0.5 cm}
+\large
+\begin{itemize}\setlength{\itemsep}{0.5 cm}
+\item Data types and their array representations \hfill \textcolor{darkorange}{\bf done\hspace{-0.15 cm}}
+\begin{itemize}
+\item {\it except:} will probably revisit masks to make them more like Arrow's
+\end{itemize}
+
+\item Python proxies and compilation as a Numba extension \hfill \textcolor{darkorange}{\bf done}
+
+\item Other language versions (C++, Julia) \hfill \textcolor{darkorange}{\bf thinking about it}
+
+\item Global operations (e.g.\ {\tt\normalsize define, filter}) \hfill \textcolor{darkorange}{\bf alpha version}
+
+\item Columnar granularity \hfill \textcolor{darkorange}{\bf alpha version}
+
+\item Delayed operations, distributed processing (with Dask) \hfill \textcolor{darkorange}{\bf in development}
+\end{itemize}
+\end{frame}
 
 \end{document}
