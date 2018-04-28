@@ -184,7 +184,30 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \includegraphics[width=\linewidth]{apache-arrow.png}
 \end{frame}
 
-
+\begin{frame}[fragile]{New: viewing split data as objects for general-purpose code}
+\vspace{0.1 cm}
+\small
+\begin{minted}{python}
+>>> for event in events:
+...     print(event)
+...     for mu in event.Muon:
+...         print("    {} {} {} {}".format(mu, mu.pt, mu.eta, mu.phi))
+...
+<Event at index 0>
+<Event at index 1>
+    <Muon at index 0> 4.00707864761 -0.517944335938 0.292175292969
+<Event at index 2>
+    <Muon at index 1> 49.4589920044 0.439025878906 -2.16455078125
+    <Muon at index 2> 3.01149749756 -1.42895507812 -0.00624084472656
+<Event at index 3>
+<Event at index 4>
+    <Muon at index 3> 4.55658817291 0.792846679688 1.30639648438
+<Event at index 5>
+    <Muon at index 4> 96.6624984741 -1.40112304688 2.5771484375
+    <Muon at index 5> 11.0187826157 -1.71313476562 -2.58740234375
+    <Muon at index 6> 4.674451828 -0.969848632812 0.640625
+\end{minted}
+\end{frame}
 
 
 \end{document}
