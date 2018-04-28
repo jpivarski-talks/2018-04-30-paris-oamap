@@ -240,7 +240,7 @@ No restriction on programming model--- any loops, function calls, branching, etc
 >>> import numba
 
 >>> @numba.njit                 # declares the following function to be compiled
-... def compute(events, out):
+... def compute(events, out):   # proxies can be passed in/out of compiled functions
 ...     i = 0
 ...     for event in events:    # "event" and "event.Muon" lists are a compiler fiction
 ...         if len(event.Muon) == 2:
@@ -259,6 +259,73 @@ No restriction on programming model--- any loops, function calls, branching, etc
 >>> out
 array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
        85.44384003, 75.96061707])
+\end{minted}
+\end{frame}
+
+\begin{frame}{What's happening here?}
+\vspace{0.4 cm}
+
+\textcolor{darkblue}{\large Strongly typed schema:}
+\begin{itemize}
+\item Primitives, lists, unions (sum types), records \& tuples (product types), pointers.
+\item Describes structure and also maps elements onto array names.
+\end{itemize}
+
+\vspace{0.25 cm}
+\begin{uncoverenv}<2->
+\textcolor{darkblue}{\large Proxy objects:}
+\begin{itemize}
+\item Hold references to dict of arrays and subelement generators.
+\item Overload {\tt\small \_\_getattr\_\_} and {\tt\small \_\_getitem\_\_} to generate subelement proxies or values.
+\end{itemize}
+\end{uncoverenv}
+
+\begin{uncoverenv}<3->
+\vspace{0.25 cm}
+\textcolor{darkblue}{\large Type-inferring compiler pass:}
+\begin{itemize}
+\item Static type-safety against the schema.
+\item Identifies a minimal set of arrays to fetch.
+\end{itemize}
+\end{uncoverenv}
+
+\begin{uncoverenv}<4->
+\vspace{0.25 cm}
+\textcolor{darkblue}{\large Lowering compiler pass:}
+\begin{itemize}
+\item Each object replaced by an integer index, passed on the stack.
+\item Equivalent of {\tt\small \_\_getattr\_\_} and {\tt\small \_\_getitem\_\_} emitted as LLVM pointer arithmetic.
+\end{itemize}
+\end{uncoverenv}
+\end{frame}
+
+\begin{frame}[fragile]{Implemented in Python as Numba extensions}
+\vspace{0.15 cm}
+\scriptsize
+\begin{minted}{python}
+@nb.typing.templates.infer
+class ListProxyGetItem(nb.typing.templates.AbstractTemplate):
+    key = "getitem"
+    def generic(self, args, kwds):
+       if len(args) == 2:
+          tpe, idx = args
+          if isinstance(tpe, ListProxyNumbaType) and isinstance(idx, nb.types.Integer):
+             return typeof_generator(tpe.generator.content)(tpe, idx)
+
+@nb.extending.lower_builtin("getitem", ListProxyNumbaType, nb.types.Integer)
+def listproxy_getitem(context, builder, sig, args):
+    listtpe, indextpe = sig.args; listval, indexval = args
+    listproxy = nb.cgutils.create_struct_proxy(listtpe)(context, builder, listval)
+    indexval = cast_int64(builder, indexval)
+
+    normindex_ptr = nb.cgutils.alloca_once_value(builder, indexval)
+    with builder.if_then(builder.icmp_signed("<", indexval, literal_int64(0))):
+        builder.store(builder.add(indexval, listproxy.length), normindex_ptr)
+    normindex = builder.load(normindex_ptr)
+
+    at = builder.add(listproxy.whence, builder.mul(listproxy.stride, normindex))
+    return generate(context, builder, listtpe.generator.content, listproxy.baggage,
+                    listproxy.ptrs, listproxy.lens, at)
 \end{minted}
 \end{frame}
 
