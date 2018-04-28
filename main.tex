@@ -103,4 +103,23 @@ The choice of events to ``skim'' and which attributes to ``slim'' has to be deci
 \end{columns}
 \end{frame}
 
+\begin{frame}{Context}
+\vspace{0.5 cm}
+It's the data structures and code branchiness that are preventing HEP from taking advantage of HPC techniques.
+
+\vspace{0.25 cm}
+\begin{itemize}\setlength{\itemsep}{0.5 cm}
+\item[$\rightarrow$]<2-> Several projects underway to rewrite or rethink core reconstruction algorithms: vectorized tracking, machine learning-based pattern recognition\ldots
+
+\item[$\rightarrow$]<3-> But a substantial part is post-reconstruction data analysis.
+\begin{itemize}\setlength{\itemsep}{0.1 cm}
+\item<4-> not centrally produced: ``users'' of the data
+\item<5-> ad-hoc (``if we knew what we were doing, it wouldn't be called research'')
+\item<6-> sometimes egregiously inefficient\ldots
+\end{itemize}
+\end{itemize}
+
+
+\end{frame}
+
 \end{document}
