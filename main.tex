@@ -58,16 +58,17 @@
 \column{0.4\linewidth}
 \underline{High Performance Computing (HPC)}
 
-\vspace{0.25 cm}
+\vspace{0.15 cm}
 \begin{itemize}
 \item A lot of focus on data contiguity, CPU cache efficiency, and vectorization.
 \item Data structures are often converted to flat arrays or tables, making it easier to reason about such issues.
 \end{itemize}
 
 \column{0.56\linewidth}
+\begin{uncoverenv}<2->
 \underline{High Energy Physics (HEP)}
 
-\vspace{0.25 cm}
+\vspace{0.15 cm}
 \begin{itemize}
 \item Data structures are generally:
 
@@ -79,7 +80,26 @@
 
 ``Looks more like string processing!''
 \end{itemize}
+\end{uncoverenv}
+\end{columns}
+\end{frame}
 
+\begin{frame}{Context}
+\vspace{0.5 cm}
+Preparing data for analysis consists of {\it copying} parts of the centrally produced dataset.
+
+\vspace{0.25 cm}
+The choice of events to ``skim'' and which attributes to ``slim'' has to be decided before interactive data exploration is possible (timescale of seconds).
+
+\vspace{0.5 cm}
+\begin{columns}[c]
+\column{0.5\linewidth}
+\mbox{ } \hfill \includegraphics[height=4.5 cm]{cms-data-explosion.png}
+
+\column{0.5\linewidth}
+
+\vspace{0.2 cm}
+\includegraphics[height=4.4 cm]{atlas-data-explosion.png} \hfill \mbox{ }
 \end{columns}
 \end{frame}
 
