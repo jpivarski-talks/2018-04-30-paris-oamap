@@ -208,9 +208,28 @@ It's the data structures and code branchiness that are preventing HEP from takin
     <Muon at index 6> 4.674451828 -0.969848632812 0.640625
 \end{minted}
 
-\vspace{-7.6 cm}
-\hfill \uncover<2->{\fbox{\normalsize e.g.\ for Pandas {\tt\small DataFrame.apply(fcn)}}}
-\vspace{7.6 cm}
+\vspace{-5.5 cm}
+\begin{uncoverenv}<2->
+\begin{center}
+\fcolorbox{black}{white}{\begin{minipage}{0.8\linewidth}
+\vspace{0.25 cm}
+\begin{center}
+\begin{minipage}{0.9\linewidth}
+The {\tt\small events} are proxies that fetch list stops on demand and each {\tt\small mu} fetches data from {\tt\small pt}, {\tt\small eta}, and {\tt\small phi} arrays on demand.
+
+\vspace{0.25 cm}
+No restriction on programming model--- any loops, function calls, branching, etc. are allowed.
+\end{minipage}
+\end{center}
+\vspace{-0.1 cm}
+\end{minipage}}
+\end{center}
+\end{uncoverenv}
+\vspace{5.5 cm}
+
+\vspace{-10.6 cm}
+\hfill \uncover<3->{\fbox{\normalsize e.g.\ for Pandas {\tt\small DataFrame.apply(fcn)}}}
+\vspace{10.6 cm}
 \end{frame}
 
 
