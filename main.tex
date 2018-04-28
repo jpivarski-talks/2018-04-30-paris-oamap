@@ -118,8 +118,27 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \item<6-> sometimes egregiously inefficient\ldots
 \end{itemize}
 \end{itemize}
-
-
 \end{frame}
+
+\begin{frame}{New technique}
+\vspace{0.5 cm}
+\textcolor{darkblue}{\large \underline{Object-array mapping (OAMap)}}
+
+\vspace{0.25 cm}
+\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\item Let data analysts write traditional object-oriented code, but translate it to HPC-like array operations at runtime. (Generalization of AOS$\to$SOA.)
+\item<2-> Analogy with object-relational mapping (ORM), but for low-level arrays.
+\item<3-> Represent nested, variable-length object data as (unequal length) arrays of each attribute and {\it never deserialize} it into runtime objects.
+\item<4-> Two ways of implementing it:
+
+\vspace{0.05 cm}
+\begin{description}\setlength{\itemsep}{0.1 cm}
+\item[proxies]<5-> that simulate objects on the fly by accessing array data in response to attribute references (low-latency exploration).
+\item[compiled]<6-> form that eliminates all objects, even temporary proxies, replacing user code with code that accesses array elements directly.
+\end{description}
+\end{itemize}
+\end{frame}
+
+
 
 \end{document}
