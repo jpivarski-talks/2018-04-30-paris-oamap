@@ -124,8 +124,8 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \vspace{0.5 cm}
 \textcolor{darkblue}{\large \underline{Object-array mapping (OAMap)}}
 
-\vspace{0.25 cm}
-\begin{itemize}\setlength{\itemsep}{0.25 cm}
+\vspace{0.15 cm}
+\begin{itemize}\setlength{\itemsep}{0.15 cm}
 \item Let data analysts write traditional object-oriented code, but translate it to HPC-like array operations at runtime. (Generalization of AOS$\to$SOA.)
 \item<2-> Analogy with object-relational mapping (ORM), but for low-level arrays.
 \item<3-> Represent nested, variable-length object data as (unequal length) arrays of each attribute and {\it never deserialize} it into runtime objects.
@@ -137,6 +137,13 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \item[compiled]<6-> form that eliminates all objects, even temporary proxies, replacing user code with code that accesses array elements directly.
 \end{description}
 \end{itemize}
+
+\vspace{0.15 cm}
+\begin{uncoverenv}<7->
+\begin{minipage}{\linewidth}
+\scriptsize \textcolor{darkblue}{Prior art:} T.\ Mattis, J.\ Henning, P.\ Rein, R.\ Hirschfeld, M.\ Appeltauer, ``Columnar Objects: Improving the Performance of Analytical Applications,'' in {\it 2015 ACM International Symposium on New Ideas, New Paradigms, and Reflections on Programming and Software (Onward!),} 2015, pp.\ 197--210.
+\end{minipage}
+\end{uncoverenv}
 \end{frame}
 
 
