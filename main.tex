@@ -184,7 +184,7 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \end{uncoverenv}
 \end{frame}
 
-\begin{frame}{Also not new: split data for runtime calculations}
+\begin{frame}{Also not new: performing runtime calculations on columns}
 \vspace{0.3 cm}
 \includegraphics[width=\linewidth]{apache-arrow.png}
 \end{frame}
@@ -237,7 +237,7 @@ No restriction on programming model--- any loops, function calls, branching, etc
 \vspace{10.6 cm}
 \end{frame}
 
-\begin{frame}[fragile]{New: compiling that code to eliminate objects altogether}
+\begin{frame}[fragile]{New: compiling that code to eliminate temporary proxies}
 \vspace{0.15 cm}
 \scriptsize
 \begin{minted}{python}
@@ -290,7 +290,7 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \textcolor{darkblue}{\large Type-inferring compiler pass:}
 \begin{itemize}
 \item Static type-safety against the schema.
-\item Identifies a minimal set of arrays to fetch.
+\item Identifies a minimal set of arrays to fetch: load only the columns you need.
 \end{itemize}
 \end{uncoverenv}
 
@@ -510,7 +510,7 @@ Original $+$ derived: 3482~MB + 0.41~MB
 
 \item Other language versions (C++, Julia) \hfill \textcolor{darkorange}{\bf thinking about it}
 
-\item Global operations (e.g.\ {\tt\normalsize define, filter}) \hfill \textcolor{darkorange}{\bf alpha version}
+\item Functional operations (e.g.\ {\tt\normalsize define, filter}) \hfill \textcolor{darkorange}{\bf alpha version}
 
 \item Columnar granularity \hfill \textcolor{darkorange}{\bf alpha version}
 
