@@ -135,8 +135,8 @@ Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 
 \vspace{0.05 cm}
 \begin{description}\setlength{\itemsep}{0.1 cm}
-\item[proxies]<5-> that simulate objects on the fly by accessing array data in response to attribute references (low-latency exploration).
-\item[compilation]<6-> that replaces user code with code that accesses array elements directly (high-throughput processing).
+\item[proxies]<5-> that simulate objects on the fly by accessing array data in response to attribute references (for low-latency exploration).
+\item[compilation]<6-> that replaces user code with code that accesses array elements directly (for high-throughput processing).
 \end{description}
 \end{itemize}
 
@@ -165,7 +165,7 @@ Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 \begin{uncoverenv}<2->
 \textcolor{darkblue}{\large Transformation rules:}
 \begin{itemize}
-\item Primitive data at leaves of schema are stored contiguously, with no structure.
+\item Primitive data at leaves of schema are stored contiguously, without structure.
 \item List structure encoded in a separate ``stops'' array, computed from the cumulative number of entries at its level of depth, written at each closing bracket.
 \end{itemize}
 \end{uncoverenv}
@@ -176,7 +176,7 @@ Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 \begin{itemize}
 \item Store list structure as combined ``starts'' and ``stops'': {\tt\small [0, 4, 4, 6, 7]}
 \item Store as list lengths instead (better varint packing, but not randomly accessible).
-\item Dremel/Parquet's definition levels and repetition levels.
+\item Dremel/Parquet's definition levels and repetition levels (same issue).
 \end{itemize}
 \end{uncoverenv}
 \end{frame}
@@ -186,7 +186,7 @@ Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 \includegraphics[width=\linewidth]{apache-arrow.png}
 \end{frame}
 
-\begin{frame}[fragile]{New: viewing split data as objects for general-purpose code}
+\begin{frame}[fragile]{\textcolor{yellow}{\bf New:} viewing split array data as objects for general-purpose code}
 \vspace{0.1 cm}
 \small
 \begin{minted}{python}
@@ -217,7 +217,7 @@ Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 \vspace{0.25 cm}
 \begin{center}
 \begin{minipage}{0.9\linewidth}
-The {\tt\small events} are proxies that fetch list stops on demand and each {\tt\small mu} fetches data from {\tt\small pt}, {\tt\small eta}, and {\tt\small phi} arrays on demand.
+These {\tt\small events} are proxies that fetch list stops on demand and each {\tt\small mu} fetches data from {\tt\small pt}, {\tt\small eta}, and {\tt\small phi} arrays on demand.
 
 \vspace{0.25 cm}
 No restriction on programming model--- any loops, function calls, branching, etc. are allowed.
@@ -234,7 +234,7 @@ No restriction on programming model--- any loops, function calls, branching, etc
 \vspace{10.6 cm}
 \end{frame}
 
-\begin{frame}[fragile]{New: compiling that code to eliminate temporary proxies}
+\begin{frame}[fragile]{\textcolor{yellow}{\bf New:} compiling that code to eliminate temporary proxies}
 \vspace{0.15 cm}
 \scriptsize
 \begin{minted}{python}
@@ -277,7 +277,7 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \begin{uncoverenv}<2->
 \textcolor{darkblue}{\large Proxy objects:}
 \begin{itemize}
-\item Hold references to dict of arrays and subelement generators.
+\item Maintain references to a dict of arrays (or equivalent) and subelement generators.
 \item Overload {\tt\small \_\_getattr\_\_} and {\tt\small \_\_getitem\_\_} to generate subelement proxies or values.
 \end{itemize}
 \end{uncoverenv}
@@ -286,7 +286,7 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \vspace{0.25 cm}
 \textcolor{darkblue}{\large Type-inferring compiler pass:}
 \begin{itemize}
-\item Static type-safety against the schema.
+\item Static type-safety checked against the schema.
 \item Identifies a minimal set of arrays to fetch: load only the columns you need.
 \end{itemize}
 \end{uncoverenv}
@@ -295,7 +295,7 @@ array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
 \vspace{0.25 cm}
 \textcolor{darkblue}{\large Lowering compiler pass:}
 \begin{itemize}
-\item Each object replaced by an integer index, passed on the stack.
+\item Each object gets replaced by an integer index, passed on the stack.
 \item Equivalent of {\tt\small \_\_getattr\_\_} and {\tt\small \_\_getitem\_\_} emitted as LLVM pointer arithmetic.
 \end{itemize}
 \end{uncoverenv}
@@ -333,7 +333,7 @@ def listproxy_getitem(context, builder, sig, args):
 
 \begin{frame}[fragile]{Operations on OAMap data}
 \vspace{0.3 cm}
-Because of heavy reliance on indexes, OAMap data can only be {\it appended} in constant time (assuming arrays can grow). We generally treat them as immutable.
+Because of heavy reliance on indexes, OAMap data can only be {\it appended} in constant time (assuming arrays/files can grow). In HEP, we'd treat them as immutable.
 
 \small
 \begin{uncoverenv}<2->
@@ -364,7 +364,7 @@ Because of heavy reliance on indexes, OAMap data can only be {\it appended} in c
 \end{uncoverenv}
 \end{frame}
 
-\begin{frame}[fragile]{Operations change schema, add new arrays}
+\begin{frame}[fragile]{Operations (like {\tt define}) change schema, add new arrays}
 \vspace{0.15 cm}
 \scriptsize
 \begin{minted}{python}
@@ -415,7 +415,7 @@ Original $+$ derived: 3482~MB + 5.2~MB
 \vspace{7.7 cm}
 \end{frame}
 
-\begin{frame}[fragile]{Operations change schema, add new arrays}
+\begin{frame}[fragile]{Operations (like {\tt filter}) change schema, add new arrays}
 \vspace{0.15 cm}
 \scriptsize
 \begin{minted}{python}
@@ -525,6 +525,9 @@ Original $+$ derived: 3482~MB + 0.41~MB
 \item Columnar granularity \hfill \textcolor{darkorange}{\bf alpha version}
 
 \item Delayed operations, distributed processing (with Dask) \hfill \textcolor{darkorange}{\bf in development}
+
+\vspace{0.15 cm}
+``Partitions'' of big lists (split at entry boundaries for parallel processing).
 \end{itemize}
 \end{frame}
 
