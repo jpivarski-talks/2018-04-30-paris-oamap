@@ -52,21 +52,32 @@
 
 % START START START START START START START START START START START START START
 
-\begin{frame}{First slide}
-\vspace{0.5 cm}
+\begin{frame}{Context}
+\vspace{0.35 cm}
 \begin{columns}[t]
 \column{0.4\linewidth}
 \underline{High Performance Computing (HPC)}
+
+\vspace{0.25 cm}
 \begin{itemize}
 \item A lot of focus on data contiguity, CPU cache efficiency, and vectorization.
 \item Data structures are often converted to flat arrays or tables, making it easier to reason about such issues.
 \end{itemize}
 
-\column{0.6\linewidth}
+\column{0.56\linewidth}
 \underline{High Energy Physics (HEP)}
-\begin{itemize}
-\item 
 
+\vspace{0.25 cm}
+\begin{itemize}
+\item Data structures are generally:
+
+\begin{center}
+\includegraphics[width=0.7\linewidth]{event-structure.pdf}
+\end{center}
+
+\item Analysis code is branchy and pointer-heavy;
+
+``Looks more like string processing!''
 \end{itemize}
 
 \end{columns}
