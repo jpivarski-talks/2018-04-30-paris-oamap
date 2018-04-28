@@ -85,11 +85,14 @@
 \end{frame}
 
 \begin{frame}{Context}
-\vspace{0.5 cm}
+\vspace{0.25 cm}
 Preparing data for analysis consists of {\it copying} parts of the centrally produced dataset.
 
 \vspace{0.25 cm}
-The choice of events to ``skim'' and which attributes to ``slim'' has to be decided before interactive data exploration is possible (timescale of seconds).
+The choice of events to ``skim'' and which attributes to ``slim'' has to be decided before interactive (human-timescale) data exploration is possible.
+
+\vspace{0.25 cm}
+Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 
 \vspace{0.5 cm}
 \begin{columns}[c]
@@ -111,11 +114,13 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \begin{itemize}\setlength{\itemsep}{0.5 cm}
 \item[$\rightarrow$]<2-> Several projects underway to rewrite or rethink core reconstruction algorithms: vectorized tracking, machine learning-based pattern recognition\ldots
 
-\item[$\rightarrow$]<3-> But a substantial part is post-reconstruction data analysis.
+\item[$\rightarrow$]<3-> But a substantial part of the work is not reconstruction, but analysis.
+
+\vspace{0.05 cm}
 \begin{itemize}\setlength{\itemsep}{0.1 cm}
-\item<4-> not centrally produced: ``users'' of the data
+\item<4-> not centrally produced: performed by ``users'' of the data
 \item<5-> ad-hoc (``if we knew what we were doing, it wouldn't be called research'')
-\item<6-> sometimes egregiously inefficient\ldots
+\item<6-> focused on physics and statistics, not computing
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -126,15 +131,15 @@ It's the data structures and code branchiness that are preventing HEP from takin
 
 \vspace{0.15 cm}
 \begin{itemize}\setlength{\itemsep}{0.15 cm}
-\item Let data analysts write traditional object-oriented code, but translate it to HPC-like array operations at runtime. (Generalization of AOS$\to$SOA.)
+\item Let data analysts write traditional object-oriented code, but translate it to HPC-like array operations at runtime. (Generalization of AOS $\to$ SOA.)
 \item<2-> Analogy with object-relational mapping (ORM), but for low-level arrays.
-\item<3-> Represent nested, variable-length object data as (unequal length) arrays of each attribute and {\it never deserialize} it into runtime objects.
-\item<4-> Two ways of implementing it:
+\item<3-> Represent nested, variable-length object data as (unequal length) arrays of each attribute and {\it never deserialize} them into runtime objects.
+\item<4-> Two ways of doing this:
 
 \vspace{0.05 cm}
 \begin{description}\setlength{\itemsep}{0.1 cm}
 \item[proxies]<5-> that simulate objects on the fly by accessing array data in response to attribute references (low-latency exploration).
-\item[compiled]<6-> form that eliminates all objects, even temporary proxies, replacing user code with code that accesses array elements directly.
+\item[compilation]<6-> that replaces user code with code that accesses array elements directly (high-throughput processing).
 \end{description}
 \end{itemize}
 
@@ -173,7 +178,7 @@ It's the data structures and code branchiness that are preventing HEP from takin
 \textcolor{darkblue}{\large Variations:}
 \begin{itemize}
 \item Store list structure as combined ``starts'' and ``stops'': {\tt\small [0, 4, 4, 6, 7]}
-\item Store as list lengths instead (smaller numbers, but not randomly accessible).
+\item Store as list lengths instead (better varint packing, but not randomly accessible).
 \item Dremel/Parquet's definition levels and repetition levels.
 \end{itemize}
 \end{uncoverenv}
