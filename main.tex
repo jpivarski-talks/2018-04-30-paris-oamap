@@ -89,7 +89,7 @@
 Preparing data for analysis consists of {\it copying} parts of the centrally produced dataset.
 
 \vspace{0.25 cm}
-The choice of events to ``skim'' and which attributes to ``slim'' has to be decided before interactive (human-timescale) data exploration is possible.
+The choice of events to ``skim'' and attributes to ``slim'' must be made before interactive (human-timescale) data exploration becomes possible.
 
 \vspace{0.25 cm}
 Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
@@ -107,20 +107,17 @@ Disk space needs will skyrocket in the High-Luminosity LHC (HL-LHC) era.
 \end{frame}
 
 \begin{frame}{Context}
-\vspace{0.5 cm}
-It's the data structures and code branchiness that are preventing HEP from taking advantage of HPC techniques.
+\vspace{0.75 cm}
+\begin{itemize}\setlength{\itemsep}{0.75 cm}
+\item[$\rightarrow$]<1-> Several projects are underway to rewrite or rethink core reconstruction algorithms: vectorized tracking, machine learning-based pattern recognition\ldots
 
-\vspace{0.25 cm}
-\begin{itemize}\setlength{\itemsep}{0.5 cm}
-\item[$\rightarrow$]<2-> Several projects underway to rewrite or rethink core reconstruction algorithms: vectorized tracking, machine learning-based pattern recognition\ldots
+\item[$\rightarrow$]<2-> But event reconstruction isn't everything; there's also data analysis!
 
-\item[$\rightarrow$]<3-> But a substantial part of the work is not reconstruction, but analysis.
-
-\vspace{0.05 cm}
-\begin{itemize}\setlength{\itemsep}{0.1 cm}
-\item<4-> not centrally produced: performed by ``users'' of the data
-\item<5-> ad-hoc (``if we knew what we were doing, it wouldn't be called research'')
-\item<6-> focused on physics and statistics, not computing
+\vspace{0.1 cm}
+\begin{itemize}\setlength{\itemsep}{0.15 cm}
+\item<3-> not centrally produced: code written by ``users'' of the data
+\item<4-> ad-hoc (``if we knew what we were doing, it wouldn't be called research'')
+\item<5-> should be focused on physics and statistics issues, not computing
 \end{itemize}
 \end{itemize}
 \end{frame}
@@ -131,7 +128,7 @@ It's the data structures and code branchiness that are preventing HEP from takin
 
 \vspace{0.15 cm}
 \begin{itemize}\setlength{\itemsep}{0.15 cm}
-\item Let data analysts write traditional object-oriented code, but translate it to HPC-like array operations at runtime. (Generalization of AOS $\to$ SOA.)
+\item Let data analysts write traditional object-oriented code, but translate it to HPC-like array operations at runtime (generalization of AOS $\to$ SOA).
 \item<2-> Analogy with object-relational mapping (ORM), but for low-level arrays.
 \item<3-> Represent nested, variable-length object data as (unequal length) arrays of each attribute and {\it never deserialize} them into runtime objects.
 \item<4-> Two ways of doing this:
