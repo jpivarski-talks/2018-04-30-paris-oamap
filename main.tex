@@ -329,7 +329,38 @@ def listproxy_getitem(context, builder, sig, args):
 \end{minted}
 \end{frame}
 
+\begin{frame}[fragile]{Operations on OAMap data}
+\vspace{0.3 cm}
+Because of heavy reliance on indexes, OAMap data can only be {\it appended} in constant time (assuming arrays can grow). We generally treat them as immutable.
 
+\small
+\begin{uncoverenv}<2->
+\begin{minted}{python}
+>>> def compute_pz(muon):
+...     return muon.pt * math.sinh(muon.eta)
+>>> events_v2 = events.define("pz", compute_pz, at="Muon")
+\end{minted}
+\end{uncoverenv}
+\begin{uncoverenv}<3->
+\begin{minted}{python}
+>>> events
+[<Event at index 0>, <Event at index 1>, <Event at index 2>, ...,
+ <Event at index 1921075>, <Event at index 1921076>]
+>>> events_v2[1].Muon[0].pz
+-2.1694915
+>>> events_v2.project("Muon/pz")
+[[], [-2.1694915], [], [], [-6.8923326], ...,
+ [10.54625], [10.16687], [], [-9.802038], [-85.11946]]
+\end{minted}
+\end{uncoverenv}
+\begin{uncoverenv}<4->
+\begin{minted}{python}
+>>> events_v3 = events_v2.filter(lambda event: len(event.Muon) >= 2)
+>>> len(events), len(events_v2), len(events_v3)
+(1921077, 1921077, 299751)
+\end{minted}
+\end{uncoverenv}
+\end{frame}
 
 
 \end{document}
