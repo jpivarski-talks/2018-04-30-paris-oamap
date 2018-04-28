@@ -232,7 +232,35 @@ No restriction on programming model--- any loops, function calls, branching, etc
 \vspace{10.6 cm}
 \end{frame}
 
+\begin{frame}[fragile]{New: compiling that code to eliminate objects altogether}
+\vspace{0.15 cm}
+\scriptsize
+\begin{minted}{python}
+>>> import numpy
+>>> import numba
 
+>>> @numba.njit                 # declares the following function to be compiled
+... def compute(events, out):
+...     i = 0
+...     for event in events:    # "event" and "event.Muon" lists are a compiler fiction
+...         if len(event.Muon) == 2:
+...             mu1, mu2 = event.Muon[0], event.Muon[1]
+...             px = mu1.px + mu2.px
+...             py = mu1.py + mu2.py
+...             pz = mu1.pz + mu2.pz
+...             energy = mu1.energy + mu2.energy
+...             out[i] = sqrt(energy**2 - px**2 - py**2 - pz**2)
+...             i += 1
+
+>>> out = numpy.empty(1921077)
+>>> compute(events, out)        # compilation and array-fetching happen on first call
+                                # but before execution
+
+>>> out
+array([90.22780609, 74.74654388, 89.75765991, ..., 92.06494904,
+       85.44384003, 75.96061707])
+\end{minted}
+\end{frame}
 
 
 
