@@ -85,6 +85,26 @@
 \end{frame}
 
 \begin{frame}{Context}
+\begin{columns}
+\column{1.15\linewidth}
+\vspace{0.11 cm}
+\only<1>{\includegraphics[width=\linewidth]{complex-atlas-collision-science-1.jpg}}
+\only<2>{\includegraphics[width=\linewidth]{complex-atlas-collision-science-2.jpg}}
+\only<3>{\includegraphics[width=\linewidth]{complex-atlas-collision-science-3.jpg}}
+\only<4>{\includegraphics[width=\linewidth]{complex-atlas-collision-science-4.jpg}}
+\only<5->{\includegraphics[width=\linewidth]{complex-atlas-collision-science-5.jpg}}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Context}
+\begin{columns}
+\column{1.15\linewidth}
+\vspace{0.11 cm}
+\includegraphics[width=\linewidth]{lhcb.png}
+\end{columns}
+\end{frame}
+
+\begin{frame}{Context}
 \vspace{0.25 cm}
 Preparing data for analysis consists of {\it copying} parts of the centrally produced dataset.
 
@@ -329,6 +349,28 @@ def listproxy_getitem(context, builder, sig, args):
     return generate(context, builder, listtpe.generator.content, listproxy.baggage,
                     listproxy.ptrs, listproxy.lens, at)
 \end{minted}
+\end{frame}
+
+\begin{frame}{Performance {\it of an old implementation}}
+\vspace{0.3 cm}
+OAMap AST-to-AST transpilation passed to Numba for compilation (old!) saw no loss in performance relative to pure C.
+
+\vspace{0.2 cm}
+\begin{columns}[t]
+\column{0.5\linewidth}
+Single-threaded rates of millions of events per second, limited only by trig functions!
+
+\begin{center}
+\includegraphics[height=5 cm]{physical-media.pdf}
+\end{center}
+\column{0.43\linewidth}
+Multi-threaded scaling limited only by physical memory bus bandwidth.
+
+\vspace{-0.8\baselineskip}
+\begin{center}
+\includegraphics[height=5 cm]{knl-scaling.pdf}
+\end{center}
+\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{Operations on OAMap data}
